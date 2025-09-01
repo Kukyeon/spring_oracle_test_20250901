@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+ 
+<mapper namespace="com.kkuk.oracle.dao.MemberDao">
+
+	<insert id="memberjoinDao">
+		INSERT INTO membertbl(membernum, memberid, memberpw, membername) 
+			VALUES(MEMBER_SEQ.nextval ,#{param1},#{param2},#{param3})
+	</insert>
+	
+	
+</mapper>
