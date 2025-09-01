@@ -1,6 +1,7 @@
 package com.kkuk.oracle.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,12 @@ public class MemberController {
 	private SqlSession sqlSession;
 	
 	@RequestMapping(value = "/join")
-	public String join() {
+	public String join(HttpServletRequest request, Model model) {
 		
+		String error = request.getParameter("error");
+		if(error != null) {
+			model.addAttribute("error", error);
+		}
 		return "memberjoin";
 	}
 	
@@ -30,10 +35,58 @@ public class MemberController {
 		String mname = request.getParameter("membername");
 		
 		MemberDao dao = sqlSession.getMapper(MemberDao.class);
-		int result = dao.memberjoinDao(mid, mpw, mname);
-		System.out.println("result : " + result); // 1이면 성공 0 이면 실패
 		
-		model.addAttribute("mid", mid);
-		return "memberjoinOk";
+		int checkFlag = dao.memberidCheckDao(mid); // 아이디가 이미 db에 존재하는지 확인 -> 존재하면 1, 없으면 0
+		
+		if(checkFlag == 1) { // 가입아이디 중복으로 가입불가
+			model.addAttribute("msg", "이미 가입된 아이디 입니다. 다시 가입해 주세요.");
+			model.addAttribute("url", "join");
+			
+			return "alert/alert";
+		}else {
+			int result = dao.memberjoinDao(mid, mpw, mname);
+			System.out.println("result : " + result); // 1이면 성공 0 이면 실패
+			model.addAttribute("mid", mid);
+			
+			return "memberjoinOk";
+		}
+	}
+	
+	@RequestMapping(value = "/login")
+	public String login(HttpServletRequest request, Model model, HttpSession session) {
+		
+		return "login";
+	}
+	
+	@RequestMapping(value = "/loginOk")
+	public String loginOk(HttpServletRequest request, Model model, HttpSession session) {
+		
+		String mid = request.getParameter("memberid");
+		String mpw = request.getParameter("memberpw");
+		
+		MemberDao dao = sqlSession.getMapper(MemberDao.class);
+		 
+		int checkFlag = dao.memberLoginDao(mid, mpw);
+		
+		if(checkFlag == 1) { // 로그인하려는 아이디, 비번이 존재 -> 성공
+			session.setAttribute("sessionId", mid); // 로그인 성공-> 세션 아이디값 설정
+			
+			model.addAttribute("msg", "로그인 성공, 반갑습니다.");
+			model.addAttribute("url", "loginSuccess");
+			
+			return "alert/alert";
+		}else { //로그인 실패
+			model.addAttribute("msg", "아이디 또는 비밀번호 확이 요망");
+			model.addAttribute("url", "login");
+			
+			return "alert/alert";
+		}
+	}
+	
+	@RequestMapping(value = "/loginSuccess")
+	public String loginSuccess(HttpServletRequest request, Model model) {
+		
+		
+		return "loginSuccess";
 	}
 }

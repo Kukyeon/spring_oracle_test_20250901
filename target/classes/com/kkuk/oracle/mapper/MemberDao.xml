@@ -11,5 +11,12 @@
 			VALUES(MEMBER_SEQ.nextval ,#{param1},#{param2},#{param3})
 	</insert>
 	
+	<select id="memberidCheckDao" resultType="int">
+		SELECT COUNT(*) FROM membertbl WHERE memberid = #{param1}
+	</select> <!-- 아이디가 존재시 1이 반환 -->
+	
+	<select id="memberLoginDao" resultType="int">
+		SELECT COUNT(*) FROM membertbl WHERE memberid = #{param1} AND memberpw = #{param2}
+	</select> <!-- 아이디가 존재시 1이 반환 -->
 	
 </mapper>
