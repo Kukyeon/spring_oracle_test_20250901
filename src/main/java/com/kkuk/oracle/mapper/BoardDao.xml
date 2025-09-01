@@ -9,4 +9,28 @@
 		INSERT INTO boardtbl(bnum, btitle, bcontent, bwriter, bhit) 
 			VALUES(board_seq.nextval, #{param1}, #{param2}, #{param3}, 0)
 	</insert>
+	
+	<resultMap type="com.kkuk.oracle.dto.BoardDto" id="boardWithMember">
+		<id property="bnum" column="bnum"/>
+		<result property="btitle" column="btitle"/>
+		<result property="bcontent" column="bcontent"/>
+		<result property="bwriter" column="bwriter"/>
+		<result property="bhit" column="bhit"/>
+		<result property="bdate" column="bdate"/>
+		
+		<association property="memberDto" javaType="com.kkuk.oracle.dto.MemberDto">
+			<id property="memberid" column="memberid"/>
+			<result property="membernum" column="membernum"/>
+			<result property="memberpw" column="memberpw"/>
+			<result property="membername" column="membername"/>
+			<result property="memberdate" column="memberdate"/>
+		</association>
+	</resultMap>
+	
+	<select id="boardListDao" resultMap="boardWithMember">
+		SELECT b.bnum, b.btitle, b.bcontent, b.bwriter, m.membername, b.bhit, b.bdate
+		FROM boardtbl b
+		INNER JOIN membertbl m ON b.bwriter = m.memberid
+		ORDER BY b.bnum DESC
+	</select>
 </mapper>

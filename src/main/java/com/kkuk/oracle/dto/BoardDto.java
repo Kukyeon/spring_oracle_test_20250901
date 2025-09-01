@@ -19,5 +19,5 @@ public class BoardDto {
 	private String bdate;
 	
 	//BoardDto : MemberDto -> 1:1관계
-	private MemberDto member;
+	private MemberDto memberDto;
 }
