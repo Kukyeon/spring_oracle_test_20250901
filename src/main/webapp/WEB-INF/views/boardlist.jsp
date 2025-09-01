@@ -22,10 +22,10 @@
 			<th>삭제</th>
 		</tr>
 		
-		<c:forEach items="${boardList}" var="board">
+		<c:forEach items="${boardList}" var="board" varStatus="status">
 			<tr>
-				<td>${board.bnum }</td>
-				<td>${board.btitle }</td>
+				<td>${boardCount - status.index }</td>
+				<td><a href="boardwrite">${board.btitle }</a></td>
 				<td>${board.bwriter }</td>
 				<td>${board.memberDto.membername }</td>
 				<td>${board.bhit }</td>

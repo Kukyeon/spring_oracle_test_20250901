@@ -12,7 +12,7 @@
 		var url = "${url}";
 		var error = "?error=error";
 		alert(msg);
-		lication.href=url+error;
+		location.href=url+error;
 	</script>
 </body>
 </html>
