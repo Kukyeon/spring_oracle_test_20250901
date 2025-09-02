@@ -10,5 +10,8 @@ public interface BoardDao {
 	public List<BoardDto> boardListDao();//게시판 글 목록 보기
 	public int AllBoardCountDao();
 	public void boardDeleteDao(int bnum);
+	public BoardDto boardViewDao(String bnum);
+	public int boardModifyDao(String bnum, String btitle, String bcontent);
+	public void updateHitDao(String bnum);
 	
 }

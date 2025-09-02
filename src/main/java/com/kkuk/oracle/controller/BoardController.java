@@ -71,9 +71,37 @@ public class BoardController {
 		return "redirect:blist";
 	}
 	
-	@RequestMapping(value = "/boardwrite")
-	public String boardwrite() {
+	@RequestMapping(value = "/boardview")
+	public String boardview(HttpServletRequest request, Model model, HttpSession session) {
 		
-		return "boardwrite";
+		String bnum = request.getParameter("bnum");
+		BoardDao boardDao = sqlSession.getMapper(BoardDao.class);
+		boardDao.updateHitDao(bnum);
+		BoardDto boardDto = boardDao.boardViewDao(bnum);
+		model.addAttribute("boardDao", boardDto);
+		
+		return "boardview";
 	}
+	
+	@RequestMapping(value = "/boardmodify")
+	public String boardmodify(HttpServletRequest request, Model model, HttpSession session) {
+		
+		String bnum = request.getParameter("bnum");
+		String btitle = request.getParameter("btitle");
+		String bcontent = request.getParameter("bcontent");
+		
+		BoardDao boardDao = sqlSession.getMapper(BoardDao.class);
+		int result = boardDao.boardModifyDao(bnum, btitle, bcontent);
+		
+		if(result == 1) {
+			model.addAttribute("msg", "글 수정 완료.");
+			model.addAttribute("url", "blist");
+			
+		}else {
+			model.addAttribute("msg", "글 수정 실패.");
+			model.addAttribute("url", "blist");
+			
+		}	return "alert/alert";
+	}		
+	
 }
