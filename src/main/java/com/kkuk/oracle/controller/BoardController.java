@@ -102,6 +102,16 @@ public class BoardController {
 			model.addAttribute("url", "blist");
 			
 		}	return "alert/alert";
-	}		
+	}	
 	
+	@RequestMapping(value = "pageList")
+	public String pageList(HttpServletRequest request, Model model, HttpSession session) {
+		
+		BoardDao boardDao = sqlSession.getMapper(BoardDao.class);
+		List<BoardDto> boardDtos = boardDao.boardListDao(); // 모든 글 가져오기(조인테이블)
+		model.addAttribute("boardList", boardDtos);
+		
+		model.addAttribute("boardCount", boardDao.AllBoardCountDao()); // 모든 글 갯수 전달
+		return "pageList";
+	}
 }
