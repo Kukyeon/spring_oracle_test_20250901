@@ -107,8 +107,20 @@ public class BoardController {
 	@RequestMapping(value = "pageList")
 	public String pageList(HttpServletRequest request, Model model, HttpSession session) {
 		
+		int pageSize = 10; // 게시판 페이지당 보여줄 글 수
+		int pageNum = 1; // 유저가 클릭한 페이지의 번호 -> 초기값 1
+		int blockSize = 5; // 페이지 블록에 표시 될 페이지 수; 
+		
+		if(request.getParameter("pageNum") != null) {
+			pageNum = Integer.parseInt(request.getParameter("pageNum")); // 유저가 선택한 페에지의 번호
+		}
+		
+		int startRow = (pageNum * pageSize) - 9; // 페이징 시 시작 행의 번호 ( 1 -> 1, 2 -> 11 , 3 -> 21 ... )
+		// ((pageNum - 1) * pageSize) + 1
+		int endRow = pageNum * pageSize; // 1- 10, 2 - 20, 3 - 30 ...
+		
 		BoardDao boardDao = sqlSession.getMapper(BoardDao.class);
-		List<BoardDto> boardDtos = boardDao.boardListDao(); // 모든 글 가져오기(조인테이블)
+		List<BoardDto> boardDtos = boardDao.pageBoardListDao(startRow, endRow); //페이징 적용된 모든 글 가져오기(조인테이블)
 		model.addAttribute("boardList", boardDtos);
 		
 		model.addAttribute("boardCount", boardDao.AllBoardCountDao()); // 모든 글 갯수 전달
