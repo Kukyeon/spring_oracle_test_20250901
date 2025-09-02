@@ -121,9 +121,21 @@ public class BoardController {
 		
 		BoardDao boardDao = sqlSession.getMapper(BoardDao.class);
 		List<BoardDto> boardDtos = boardDao.pageBoardListDao(startRow, endRow); //페이징 적용된 모든 글 가져오기(조인테이블)
-		model.addAttribute("boardList", boardDtos);
+		int totalCount = boardDao.AllBoardCountDao();
 		
-		model.addAttribute("boardCount", boardDao.AllBoardCountDao()); // 모든 글 갯수 전달
+		int startPage = (((pageNum-1) / blockSize)*blockSize)+1;
+		int endPage = startPage + (blockSize - 1);
+		int totalPage = (int)Math.ceil((double)totalCount / pageSize) ;// 전체 글 개수로 만든 총 페이지 수
+		if(endPage > totalPage) {
+			endPage = totalPage;
+		}
+		
+		model.addAttribute("boardList", boardDtos);
+		model.addAttribute("pageNum", pageNum);
+		model.addAttribute("startPage", startPage);
+		model.addAttribute("endPage", endPage);
+		model.addAttribute("totalPage", totalPage);
+		model.addAttribute("boardCount", totalCount); // 모든 글 갯수 전달
 		return "pageList";
 	}
 }
